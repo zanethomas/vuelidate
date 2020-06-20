@@ -1,8 +1,9 @@
 <template>
   <div id="app">
+    <DynamicValidations />
     <OldApiExample />
-    <!-- <nested-validations />
-    <simple-form /> -->
+    <nested-validations />
+    <simple-form />
   </div>
 </template>
 
@@ -10,13 +11,15 @@
 import OldApiExample from './components/OldApiExample.vue'
 import NestedValidations from './components/NestedValidations.vue'
 import SimpleForm from './components/SimpleForm.vue'
+import DynamicValidations from './components/DynamicValidations.vue'
 
 export default {
   name: 'App',
   components: {
     SimpleForm,
     NestedValidations,
-    OldApiExample
+    OldApiExample,
+    DynamicValidations
   }
 }
 </script>
