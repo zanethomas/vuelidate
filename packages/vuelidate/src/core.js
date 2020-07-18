@@ -256,11 +256,11 @@ function createValidationResults (rules, state, key, parentKey, resultsStorage, 
   })
 
   result.$invalid = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$invalid.value)
+    ruleKeys.some(ruleKey => unwrap(result[ruleKey].$invalid))
   )
 
   result.$pending = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$pending.value)
+    ruleKeys.some(ruleKey => unwrap(result[ruleKey].$pending))
   )
 
   result.$error = computed(() =>
@@ -268,7 +268,7 @@ function createValidationResults (rules, state, key, parentKey, resultsStorage, 
   )
 
   result.$errors = computed(() => ruleKeys
-    .filter(ruleKey => result[ruleKey].$invalid.value)
+    .filter(ruleKey => unwrap(result[ruleKey].$invalid))
     .map(ruleKey => {
       const res = result[ruleKey]
       return reactive({
