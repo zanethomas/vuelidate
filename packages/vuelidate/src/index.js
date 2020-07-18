@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed } from 'vue'
+import { provide, inject, ref, computed } from 'vue-demi'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 

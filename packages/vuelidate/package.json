@@ -21,6 +21,9 @@
     "jest-serializer-vue": "^2.0.2",
     "vue": "^3.0.0-beta.14"
   },
+  "dependencies": {
+    "vue-demi": "^0.1.4"
+  },
   "publishConfig": {
     "access": "public"
   }
