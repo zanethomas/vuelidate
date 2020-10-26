@@ -6,6 +6,7 @@ import { computed, reactive, ref, watch, isRef } from 'vue-demi'
  * @property {Validator} $validator
  * @property {String | Ref<String> | function(*): string} [$message]
  * @property {Object | Ref<Object>} [$params]
+ * @property {Object | Ref<Object>} [$async]
  */
 
 /**
@@ -91,9 +92,10 @@ function normalizeValidatorResponse (result) {
  * @param {Validator} rule
  * @param {Ref<*>} model
  * @param {Ref<boolean>} $dirty
+ * @param {Reactive<Object>} $params
  * @return {Ref<Boolean>}
  */
-function createComputedResult (rule, model, $dirty) {
+function createComputedResult (rule, model, $dirty, $params) {
   return computed(() => {
     // if $dirty is false, we dont validate at all.
     // TODO: Make this optional, this is a huge breaking change
@@ -103,6 +105,7 @@ function createComputedResult (rule, model, $dirty) {
     if (isPromise(result)) {
       throw Error('[vuelidate] detected a raw async validator. Please wrap any async validators in the `withAsync` helper.')
     }
+    $params.$response = result
     return normalizeValidatorResponse(result)
   })
 }
@@ -115,7 +118,7 @@ function createComputedResult (rule, model, $dirty) {
  * @param {Ref<Boolean>} $dirty
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, $pending, $dirty) {
+function createAsyncResult (rule, model, $pending, $dirty, $params) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
@@ -135,11 +138,13 @@ function createAsyncResult (rule, model, $pending, $dirty) {
         .then(data => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
+          $params.$response = data
           $invalid.value = normalizeValidatorResponse(data)
         })
         .catch(() => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
+          $params.$response = null
           $invalid.value = true
         })
     },
@@ -170,9 +175,10 @@ function createValidatorResult (rule, state, key, $dirty) {
       rule.$validator,
       model,
       $pending,
-      $dirty
+      $dirty,
+      $params
     )
-    : createComputedResult(rule.$validator, model, $dirty)
+    : createComputedResult(rule.$validator, model, $dirty, $params)
 
   const message = rule.$message
   const $message = isFunction(message)
