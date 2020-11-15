@@ -178,7 +178,7 @@ const getComponent = (Vue) => {
     beforeCreate() {
       this._vval = null
     },
-    beforeDestroy() {
+    beforeUnmount() {
       if (this._vval) {
         patchChildren(this._vval)
         this._vval = null
@@ -587,7 +587,7 @@ const validationMixin = {
       return this._vuelidate ? this._vuelidate.refs.$v.proxy : null
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this._vuelidate) {
       this._vuelidate.$destroy()
       this._vuelidate = null
